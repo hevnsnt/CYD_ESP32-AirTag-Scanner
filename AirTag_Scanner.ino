@@ -40,12 +40,9 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
         size_t payLoadLength = advertisedDevice.getPayloadLength();
 
         // searches both "1E FF 4C 00" and "4C 00 12 19" as the payload can differ slightly
+        //Needs to look for the manufacturer ID in reverse byte order.  Apple is 0x004C, but is in the packet as   4C00
         bool patternFound = false;
         for (int i = 0; i <= payLoadLength - 4; i++) {
-            // if (payLoad[i] == 0x1E && payLoad[i+1] == 0xFF && payLoad[i+2] == 0x4C && payLoad[i+3] == 0x00) {
-            //    patternFound = true;
-            //    break;
-            //}
                         if (payLoad[i] == 0x4C && payLoad[i+1] == 0x00 && payLoad[i+2] == 0x07 && payLoad[i+3] == 0x19) {
                 patternFound = true;
                 tagstatus = "Registered ";
@@ -53,6 +50,41 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
             }           if (payLoad[i] == 0x4C && payLoad[i+1] == 0x00 && payLoad[i+2] == 0x12 && payLoad[i+3] == 0x19) {
                 patternFound = true;
                 tagstatus = "Unregistered ";
+                break;
+            }
+                        if (payLoad[i] == 0xEC && payLoad[i+1] == 0xFE) {
+                patternFound = true;
+                tagstatus = "Tile ";
+                break;
+            }
+                        if (payLoad[i] == 0x7C && payLoad[i+1] == 0x06) {
+                patternFound = true;
+                tagstatus = "Tile ";
+                break;
+            }
+                        if (payLoad[i] == 0xED && payLoad[i+1] == 0xFE) {
+                patternFound = true;
+                tagstatus = "Tile ";
+                break;
+            }
+                        if (payLoad[i] == 0x65 && payLoad[i+1] == 0xFE) {
+                patternFound = true;
+                tagstatus = "Chipolo ";
+                break;
+            }
+                        if (payLoad[i] == 0xC3 && payLoad[i+1] == 0x08) {
+                patternFound = true;
+                tagstatus = "Chipolo ";
+                break;
+            }    
+                        if (payLoad[i] == 0x84 && payLoad[i+1] == 0xFD) {
+                patternFound = true;
+                tagstatus = "Tile ";
+                break;
+            }
+                        if (payLoad[i] == 0x33 && payLoad[i+1] == 0xFE) {
+                patternFound = true;
+                tagstatus = "Chipolo ";
                 break;
             }
         }
